@@ -65,23 +65,83 @@ function ai_wine_rater_prefix_title($title) {
     return $title;
 }
 add_filter('the_title', 'ai_wine_rater_prefix_title');
-// Day 2: Shortcode - Wine Rating দেখানো
+
+// Day 3: অ্যাডমিন মেনু যোগ করা
+function ai_wine_rater_admin_menu() {
+    add_menu_page(
+        'AI Wine Rater Settings',     // পেজ টাইটেল
+        'Wine Rater',                 // মেনু নাম
+        'manage_options',             // কে দেখতে পারবে (অ্যাডমিন)
+        'ai-wine-rater-settings',     // স্লাগ
+        'ai_wine_rater_settings_page', // কলব্যাক ফাংশন
+        'dashicons-star-filled',      // আইকন
+        80                            // পজিশন
+    );
+}
+add_action('admin_menu', 'ai_wine_rater_admin_menu');
+
+// Day 3: সেটিংস পেজের HTML
+function ai_wine_rater_settings_page() {
+    ?>
+    <div class="wrap">
+        <h1>🍷 AI Wine Rater Settings</h1>
+        <form method="post" action="options.php">
+            <?php
+            settings_fields('ai_wine_rater_settings_group');
+            do_settings_sections('ai-wine-rater-settings');
+            submit_button();
+            ?>
+        </form>
+    </div>
+    <?php
+}
+
+// Day 3: সেটিংস রেজিস্টার করা
+function ai_wine_rater_register_settings() {
+    register_setting('ai_wine_rater_settings_group', 'ai_wine_rater_default_score');
+
+    add_settings_section(
+        'ai_wine_rater_main_section',
+        'Main Settings',
+        null,
+        'ai-wine-rater-settings'
+    );
+
+    add_settings_field(
+        'default_score',
+        'Default Rating Score',
+        'ai_wine_rater_default_score_field',
+        'ai-wine-rater-settings',
+        'ai_wine_rater_main_section'
+    );
+}
+add_action('admin_init', 'ai_wine_rater_register_settings');
+
+// Day 3: ইনপুট ফিল্ড
+function ai_wine_rater_default_score_field() {
+    $score = get_option('ai_wine_rater_default_score', '5'); // ডিফল্ট 5
+    echo '<input type="number" step="0.1" min="0" max="5" name="ai_wine_rater_default_score" value="' . esc_attr($score) . '" />';
+    echo '<p class="description">শর্টকোডে score না দিলে এই ভ্যালু ব্যবহার হবে (0-5)</p>';
+}
+
+// Day 2 + Day 3: Shortcode - Wine Rating দেখানো (ডিফল্ট স্কোর সেটিংস থেকে নেয়া)
 function ai_wine_rater_shortcode($atts) {
+    $default_score = get_option('ai_wine_rater_default_score', '5'); // সেটিংস থেকে ডিফল্ট
+
     $atts = shortcode_atts(array(
-        'score' => '5',
+        'score' => $default_score,
         'text' => 'Excellent Wine!',
     ), $atts, 'wine_rating');
 
     $score = floatval($atts['score']);
     $text = esc_html($atts['text']);
 
-    // স্টার রেটিং জেনারেট করা
     $stars = '';
     for ($i = 1; $i <= 5; $i++) {
         if ($i <= $score) {
-            $stars .= '★'; // ফুল স্টার
+            $stars .= '★';
         } else {
-            $stars .= '☆'; // খালি স্টার
+            $stars .= '☆';
         }
     }
 
