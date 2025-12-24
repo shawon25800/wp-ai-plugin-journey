@@ -18,7 +18,7 @@ if (!defined('ABSPATH')) {
 // ফুটারে মেসেজ দেখানোর ফাংশন
 function ai_wine_rater_footer_message() {
     ?>
-    <div style="text-align:center; background:#4FAAA4; color:white; padding:20px; margin-top:40px; font-size:18px;">Hey' Grok lets build something..
+    <div style="text-align:center; background:#4FAAA4; color:white; padding:20px; margin-top:40px; font-size:18px;">(test to push in github)Hey' Grok lets build something..
         🍷 IT's my day 2 🚀 <br>
         <small>Lets make a better plugin</small>
     </div>
