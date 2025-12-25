@@ -15,7 +15,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Day 1: ফুটারে পার্সোনাল মেসেজ (তোমার লেটেস্ট ভার্সন)
+// Day 1: ফুটারে পার্সোনাল মেসেজ
 function ai_wine_rater_footer_message() {
     ?>
     <div style="text-align:center; background:#5f9ea0; color:white; padding:20px; margin-top:40px; font-size:18px;">
@@ -26,7 +26,7 @@ function ai_wine_rater_footer_message() {
 }
 add_action('wp_footer', 'ai_wine_rater_footer_message');
 
-// Day 2: Action Hook - অ্যাডমিনে ওয়েলকাম নোটিস
+// Day 2: অ্যাডমিন নোটিস
 function ai_wine_rater_day2_admin_notice() {
     ?>
     <div class="notice notice-success is-dismissible">
@@ -36,14 +36,14 @@ function ai_wine_rater_day2_admin_notice() {
 }
 add_action('admin_notices', 'ai_wine_rater_day2_admin_notice');
 
-// Day 2: Action Hook - সাইটের head-এ কাস্টম মেটা ট্যাগ
+// Day 2: Head-এ মেটা ট্যাগ
 function ai_wine_rater_custom_meta() {
     echo '<meta name="author" content="Shawon - Learning with Grok AI 🍷">';
     echo '<meta name="description" content="AI Wine Rater Plugin - Day 2 Hooks Practice">';
 }
 add_action('wp_head', 'ai_wine_rater_custom_meta');
 
-// Day 2: Filter Hook - পোস্ট কন্টেন্টের শেষে অটো বক্স অ্যাড করা
+// Day 2: কন্টেন্ট ফিল্টার
 function ai_wine_rater_add_footer_to_content($content) {
     if (is_single()) {
         $extra_content = '<div style="margin-top: 30px; padding: 20px; background: #f8f8f8; border-left: 5px solid #722f37;">';
@@ -57,7 +57,7 @@ function ai_wine_rater_add_footer_to_content($content) {
 }
 add_filter('the_content', 'ai_wine_rater_add_footer_to_content');
 
-// Day 2: Filter Hook - পোস্ট টাইটেলে prefix অ্যাড করা
+// Day 2: টাইটেল প্রিফিক্স
 function ai_wine_rater_prefix_title($title) {
     if (is_single()) {
         $title = '[Day 2] ' . $title;
@@ -66,21 +66,21 @@ function ai_wine_rater_prefix_title($title) {
 }
 add_filter('the_title', 'ai_wine_rater_prefix_title');
 
-// Day 3: অ্যাডমিন মেনু যোগ করা
+// Day 3 & 4: অ্যাডমিন মেনু
 function ai_wine_rater_admin_menu() {
     add_menu_page(
-        'AI Wine Rater Settings',     // পেজ টাইটেল
-        'Wine Rater',                 // মেনু নাম
-        'manage_options',             // কে দেখতে পারবে (অ্যাডমিন)
-        'ai-wine-rater-settings',     // স্লাগ
-        'ai_wine_rater_settings_page', // কলব্যাক ফাংশন
-        'dashicons-star-filled',      // আইকন
-        80                            // পজিশন
+        'AI Wine Rater Settings',
+        'Wine Rater',
+        'manage_options',
+        'ai-wine-rater-settings',
+        'ai_wine_rater_settings_page',
+        'dashicons-star-filled',
+        80
     );
 }
 add_action('admin_menu', 'ai_wine_rater_admin_menu');
 
-// Day 3: সেটিংস পেজের HTML
+// Day 3 & 4: সেটিংস পেজ
 function ai_wine_rater_settings_page() {
     ?>
     <div class="wrap">
@@ -89,17 +89,20 @@ function ai_wine_rater_settings_page() {
             <?php
             settings_fields('ai_wine_rater_settings_group');
             do_settings_sections('ai-wine-rater-settings');
-            submit_button();
+            submit_button('Save Changes');
             ?>
         </form>
     </div>
     <?php
 }
 
-// Day 3: সেটিংস রেজিস্টার করা
+// Day 3 & 4: সেটিংস রেজিস্টার
 function ai_wine_rater_register_settings() {
+    // গ্রুপ + অপশন রেজিস্টার
     register_setting('ai_wine_rater_settings_group', 'ai_wine_rater_default_score');
+    register_setting('ai_wine_rater_settings_group', 'ai_wine_rater_box_color');
 
+    // সেকশন
     add_settings_section(
         'ai_wine_rater_main_section',
         'Main Settings',
@@ -107,6 +110,7 @@ function ai_wine_rater_register_settings() {
         'ai-wine-rater-settings'
     );
 
+    // ডিফল্ট স্কোর ফিল্ড
     add_settings_field(
         'default_score',
         'Default Rating Score',
@@ -114,19 +118,47 @@ function ai_wine_rater_register_settings() {
         'ai-wine-rater-settings',
         'ai_wine_rater_main_section'
     );
+
+    // কালার ফিল্ড
+    add_settings_field(
+        'box_color',
+        'Rating Box Background Color',
+        'ai_wine_rater_box_color_field',
+        'ai-wine-rater-settings',
+        'ai_wine_rater_main_section'
+    );
 }
 add_action('admin_init', 'ai_wine_rater_register_settings');
 
-// Day 3: ইনপুট ফিল্ড
+// ডিফল্ট স্কোর ফিল্ড
 function ai_wine_rater_default_score_field() {
-    $score = get_option('ai_wine_rater_default_score', '5'); // ডিফল্ট 5
+    $score = get_option('ai_wine_rater_default_score', '5');
     echo '<input type="number" step="0.1" min="0" max="5" name="ai_wine_rater_default_score" value="' . esc_attr($score) . '" />';
     echo '<p class="description">শর্টকোডে score না দিলে এই ভ্যালু ব্যবহার হবে (0-5)</p>';
 }
 
-// Day 2 + Day 3: Shortcode - Wine Rating দেখানো (ডিফল্ট স্কোর সেটিংস থেকে নেয়া)
+// কালার ফিল্ড
+function ai_wine_rater_box_color_field() {
+    $color = get_option('ai_wine_rater_box_color', '#722f37');
+    echo '<input type="text" name="ai_wine_rater_box_color" value="' . esc_attr($color) . '" class="my-color-field" />';
+    echo '<p class="description">রেটিং বক্সের ব্যাকগ্রাউন্ড কালার (hex code, যেমন #722f37)</p>';
+}
+
+// Day 4: কালার পিকার + CSS লোড
+function ai_wine_rater_enqueue_admin_scripts($hook) {
+    if ('toplevel_page_ai-wine-rater-settings' !== $hook) {
+        return;
+    }
+    wp_enqueue_style('wp-color-picker');
+    wp_enqueue_script('wp-color-picker');
+    wp_add_inline_script('wp-color-picker', 'jQuery(document).ready(function($){ $(".my-color-field").wpColorPicker(); });');
+}
+add_action('admin_enqueue_scripts', 'ai_wine_rater_enqueue_admin_scripts');
+
+// Day 2 + 3 + 4: শর্টকোড (ডিফল্ট স্কোর + কালার)
 function ai_wine_rater_shortcode($atts) {
-    $default_score = get_option('ai_wine_rater_default_score', '5'); // সেটিংস থেকে ডিফল্ট
+    $default_score = get_option('ai_wine_rater_default_score', '5');
+    $box_color = get_option('ai_wine_rater_box_color', '#722f37');
 
     $atts = shortcode_atts(array(
         'score' => $default_score,
@@ -145,7 +177,7 @@ function ai_wine_rater_shortcode($atts) {
         }
     }
 
-    $output = '<div style="background:#722f37; color:white; padding:20px; border-radius:10px; text-align:center; margin:30px 0; font-family:Arial;">';
+    $output = '<div style="background:' . esc_attr($box_color) . '; color:white; padding:20px; border-radius:10px; text-align:center; margin:30px 0;">';
     $output .= '<p style="margin:0; font-size:24px;"><strong>Wine Rating:</strong> ' . $stars . ' ' . $score . '/5</p>';
     $output .= '<p style="margin:15px 0 0; font-size:18px;">' . $text . '</p>';
     $output .= '</div>';
