@@ -185,3 +185,69 @@ function ai_wine_rater_shortcode($atts) {
     return $output;
 }
 add_shortcode('wine_rating', 'ai_wine_rater_shortcode');
+// Day 5: Custom Post Type - Wines
+function ai_wine_rater_register_cpt() {
+    $labels = array(
+        'name'               => 'Wines',
+        'singular_name'      => 'Wine',
+        'menu_name'          => 'Wines',
+        'name_admin_bar'     => 'Wine',
+        'add_new'            => 'Add New Wine',
+        'add_new_item'       => 'Add New Wine Review',
+        'new_item'           => 'New Wine',
+        'edit_item'          => 'Edit Wine',
+        'view_item'          => 'View Wine',
+        'all_items'          => 'All Wines',
+        'search_items'       => 'Search Wines',
+        'not_found'          => 'No wines found.',
+    );
+
+    $args = array(
+        'labels'             => $labels,
+        'public'             => true,
+        'has_archive'        => true,
+        'rewrite'            => array('slug' => 'wines'),
+        'supports'           => array('title', 'editor', 'thumbnail', 'excerpt', 'comments'),
+        'show_in_menu'       => 'ai-wine-rater-settings', // আমাদের মেনুর নিচে সাবমেনু হিসেবে
+        'menu_icon'          => 'dashicons-food',
+    );
+
+    register_post_type('wine', $args);
+}
+add_action('init', 'ai_wine_rater_register_cpt');
+// Day 5: Meta Box - Wine Rating Score
+function ai_wine_rater_add_meta_box() {
+    add_meta_box(
+        'wine_rating_meta',
+        'Wine Rating Score',
+        'ai_wine_rater_meta_box_callback',
+        'wine',
+        'side',
+        'high'
+    );
+}
+add_action('add_meta_boxes', 'ai_wine_rater_add_meta_box');
+
+// Meta Box কন্টেন্ট
+function ai_wine_rater_meta_box_callback($post) {
+    $rating = get_post_meta($post->ID, '_wine_rating_score', true);
+    $rating = $rating ? $rating : '5';
+    ?>
+    <p>
+        <label for="wine_rating_score"><strong>Rating (0-5):</strong></label><br>
+        <input type="number" step="0.1" min="0" max="5" id="wine_rating_score" name="wine_rating_score" value="<?php echo esc_attr($rating); ?>" style="width:100%;" />
+    </p>
+    <?php
+}
+
+// সেভ করা
+function ai_wine_rater_save_meta($post_id) {
+    if (array_key_exists('wine_rating_score', $_POST)) {
+        update_post_meta(
+            $post_id,
+            '_wine_rating_score',
+            sanitize_text_field($_POST['wine_rating_score'])
+        );
+    }
+}
+add_action('save_post', 'ai_wine_rater_save_meta');
