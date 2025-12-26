@@ -30,7 +30,7 @@ add_action('wp_footer', 'ai_wine_rater_footer_message');
 function ai_wine_rater_day2_admin_notice() {
     ?>
     <div class="notice notice-success is-dismissible">
-        <p>🍷 <strong>Day 2 শুরু!</strong> তুমি এখন hooks শিখছো – WordPress-এর সবচেয়ে পাওয়ারফুল টুল! 🚀</p>
+        <p>🍷 <strong></p>
     </div>
     <?php
 }
@@ -129,18 +129,20 @@ function ai_wine_rater_remove_duplicate_submenu() {
 }
 add_action('admin_menu', 'ai_wine_rater_remove_duplicate_submenu', 999);
 
-// Day 3 & 4: সেটিংস পেজ
+// Day 3 & 4: সেটিংস পেজ – glassmorphism style সহ
 function ai_wine_rater_settings_page() {
     ?>
-    <div class="wrap">
-        <h1>🍷 AI Wine Rater Settings</h1>
-        <form method="post" action="options.php">
-            <?php
-            settings_fields('ai_wine_rater_settings_group');
-            do_settings_sections('ai-wine-rater-settings');
-            submit_button('Save Changes');
-            ?>
-        </form>
+    <div class="wrap" style="background: url('https://images.unsplash.com/photo-1516594794599-4a5e4b9e9a5d?ixlib=rb-4.0.3&auto=format&fit=crop&q=80') no-repeat center center fixed; background-size: cover; min-height: 100vh;">
+        <div style="max-width: 800px; margin: 40px auto; padding: 40px; background: rgba(255, 255, 255, 0.15); border-radius: 16px; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.18);">
+            <h1 style="text-align:center; color:white; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">🍷 AI Wine Rater Settings</h1>
+            <form method="post" action="options.php" style="background: rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 12px;">
+                <?php
+                settings_fields('ai_wine_rater_settings_group');
+                do_settings_sections('ai-wine-rater-settings');
+                submit_button('Save Changes', 'primary', 'submit', true, array('style' => 'background:#722f37; border:none; padding:12px 30px; font-size:16px; border-radius:8px;'));
+                ?>
+            </form>
+        </div>
     </div>
     <?php
 }
@@ -199,8 +201,25 @@ function ai_wine_rater_box_color_field() {
 
 function ai_wine_rater_text_font_field() {
     $font = get_option('ai_wine_rater_text_font', 'Arial');
-    echo '<input type="text" name="ai_wine_rater_text_font" value="' . esc_attr($font) . '" />';
-    echo '<p class="description">যেমন: Arial, Georgia, "Times New Roman"</p>';
+    $fonts = array(
+        'Arial' => 'Arial',
+        'Georgia' => 'Georgia',
+        'Helvetica' => 'Helvetica',
+        'Times New Roman' => '"Times New Roman", Times, serif',
+        'Verdana' => 'Verdana',
+        'Courier New' => '"Courier New", Courier, monospace',
+        'Trebuchet MS' => '"Trebuchet MS", Helvetica, sans-serif',
+        'Palatino' => 'Palatino, "Palatino Linotype", serif',
+        'Lucida Sans' => '"Lucida Sans Unicode", "Lucida Grande", sans-serif',
+        'Impact' => 'Impact, Charcoal, sans-serif',
+    );
+
+    echo '<select name="ai_wine_rater_text_font">';
+    foreach ($fonts as $value => $label) {
+        echo '<option value="' . esc_attr($value) . '" ' . selected($font, $value, false) . '>' . esc_html($label) . '</option>';
+    }
+    echo '</select>';
+    echo '<p class="description">রেটিং টেক্সটের ফন্ট ফ্যামিলি চুজ করো</p>';
 }
 
 // Day 4: কালার পিকার লোড (সেটিংস পেজের জন্য)
