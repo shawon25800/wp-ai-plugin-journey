@@ -10,12 +10,12 @@
  * Text Domain: ai-wine-rater
  */
 
-// সিকিউরিটি: ডাইরেক্ট অ্যাক্সেস ব্লক করা
+// সিকিউরিটি
 if (!defined('ABSPATH')) {
     exit;
 }
 
-// Day 1: ফুটারে পার্সোনাল মেসেজ
+// Day 1: ফুটার মেসেজ
 function ai_wine_rater_footer_message() {
     ?>
     <div style="text-align:center; background:#5f9ea0; color:white; padding:20px; margin-top:40px; font-size:18px;">
@@ -36,7 +36,7 @@ function ai_wine_rater_day2_admin_notice() {
 }
 add_action('admin_notices', 'ai_wine_rater_day2_admin_notice');
 
-// Day 2: Head-এ মেটা ট্যাগ
+// Day 2: Head মেটা
 function ai_wine_rater_custom_meta() {
     echo '<meta name="author" content="Shawon - Learning with Grok AI 🍷">';
     echo '<meta name="description" content="AI Wine Rater Plugin - Day 2 Hooks Practice">';
@@ -66,7 +66,7 @@ function ai_wine_rater_prefix_title($title) {
 }
 add_filter('the_title', 'ai_wine_rater_prefix_title');
 
-// Day 3 & 4: অ্যাডমিন মেনু
+// Day 3 & 4: প্রধান মেনু + সাবমেনু
 function ai_wine_rater_admin_menu() {
     add_menu_page(
         'AI Wine Rater Settings',
@@ -77,8 +77,30 @@ function ai_wine_rater_admin_menu() {
         'dashicons-star-filled',
         80
     );
+
+    add_submenu_page(
+        'ai-wine-rater-settings',
+        'All Reviews',
+        'All Reviews',
+        'manage_options',
+        'edit.php?post_type=wine'
+    );
+
+    add_submenu_page(
+        'ai-wine-rater-settings',
+        'Add New Review',
+        'Add New Review',
+        'manage_options',
+        'post-new.php?post_type=wine'
+    );
 }
 add_action('admin_menu', 'ai_wine_rater_admin_menu');
+
+// ডুপ্লিকেট সাবমেনু হাইড করা
+function ai_wine_rater_remove_duplicate_submenu() {
+    remove_submenu_page('ai-wine-rater-settings', 'ai-wine-rater-settings');
+}
+add_action('admin_menu', 'ai_wine_rater_remove_duplicate_submenu', 999);
 
 // Day 3 & 4: সেটিংস পেজ
 function ai_wine_rater_settings_page() {
@@ -98,11 +120,10 @@ function ai_wine_rater_settings_page() {
 
 // Day 3 & 4: সেটিংস রেজিস্টার
 function ai_wine_rater_register_settings() {
-    // গ্রুপ + অপশন রেজিস্টার
     register_setting('ai_wine_rater_settings_group', 'ai_wine_rater_default_score');
     register_setting('ai_wine_rater_settings_group', 'ai_wine_rater_box_color');
+    register_setting('ai_wine_rater_settings_group', 'ai_wine_rater_text_font');
 
-    // সেকশন
     add_settings_section(
         'ai_wine_rater_main_section',
         'Main Settings',
@@ -110,7 +131,6 @@ function ai_wine_rater_register_settings() {
         'ai-wine-rater-settings'
     );
 
-    // ডিফল্ট স্কোর ফিল্ড
     add_settings_field(
         'default_score',
         'Default Rating Score',
@@ -119,7 +139,6 @@ function ai_wine_rater_register_settings() {
         'ai_wine_rater_main_section'
     );
 
-    // কালার ফিল্ড
     add_settings_field(
         'box_color',
         'Rating Box Background Color',
@@ -127,24 +146,37 @@ function ai_wine_rater_register_settings() {
         'ai-wine-rater-settings',
         'ai_wine_rater_main_section'
     );
+
+    add_settings_field(
+        'text_font',
+        'Rating Text Font Family',
+        'ai_wine_rater_text_font_field',
+        'ai-wine-rater-settings',
+        'ai_wine_rater_main_section'
+    );
 }
 add_action('admin_init', 'ai_wine_rater_register_settings');
 
-// ডিফল্ট স্কোর ফিল্ড
+// ফিল্ড ফাংশন
 function ai_wine_rater_default_score_field() {
     $score = get_option('ai_wine_rater_default_score', '5');
     echo '<input type="number" step="0.1" min="0" max="5" name="ai_wine_rater_default_score" value="' . esc_attr($score) . '" />';
     echo '<p class="description">শর্টকোডে score না দিলে এই ভ্যালু ব্যবহার হবে (0-5)</p>';
 }
 
-// কালার ফিল্ড
 function ai_wine_rater_box_color_field() {
     $color = get_option('ai_wine_rater_box_color', '#722f37');
     echo '<input type="text" name="ai_wine_rater_box_color" value="' . esc_attr($color) . '" class="my-color-field" />';
     echo '<p class="description">রেটিং বক্সের ব্যাকগ্রাউন্ড কালার (hex code, যেমন #722f37)</p>';
 }
 
-// Day 4: কালার পিকার + CSS লোড
+function ai_wine_rater_text_font_field() {
+    $font = get_option('ai_wine_rater_text_font', 'Arial');
+    echo '<input type="text" name="ai_wine_rater_text_font" value="' . esc_attr($font) . '" />';
+    echo '<p class="description">যেমন: Arial, Georgia, "Times New Roman"</p>';
+}
+
+// Day 4: কালার পিকার লোড
 function ai_wine_rater_enqueue_admin_scripts($hook) {
     if ('toplevel_page_ai-wine-rater-settings' !== $hook) {
         return;
@@ -155,55 +187,15 @@ function ai_wine_rater_enqueue_admin_scripts($hook) {
 }
 add_action('admin_enqueue_scripts', 'ai_wine_rater_enqueue_admin_scripts');
 
-// Day 6: শর্টকোড – মেটা থেকে রেটিং নেয়া + ডিফল্ট সাপোর্ট
-function ai_wine_rater_shortcode($atts) {
-    global $post;
-
-    $default_score = get_option('ai_wine_rater_default_score', '5');
-    $box_color = get_option('ai_wine_rater_box_color', '#722f37');
-
-    // CPT 'wine' হলে মেটা থেকে রেটিং নেয়া
-    $meta_score = '';
-    if (get_post_type() == 'wine' && $post) {
-        $meta_score = get_post_meta($post->ID, '_wine_rating_score', true);
-    }
-
-    $atts = shortcode_atts(array(
-        'score' => $meta_score ?: $default_score, // মেটা > ডিফল্ট
-        'text'  => 'Excellent Wine!',
-    ), $atts, 'wine_rating');
-
-    $score = floatval($atts['score']);
-    $text = esc_html($atts['text']);
-
-    $stars = '';
-    for ($i = 1; $i <= 5; $i++) {
-        $stars .= ($i <= $score) ? '★' : '☆';
-    }
-
-    $output = '<div style="background:' . esc_attr($box_color) . '; color:white; padding:20px; border-radius:10px; text-align:center; margin:30px 0;">';
-    $output .= '<p style="margin:0; font-size:24px;"><strong>Wine Rating:</strong> ' . $stars . ' ' . $score . '/5</p>';
-    $output .= '<p style="margin:15px 0 0; font-size:18px;">' . $text . '</p>';
-    $output .= '</div>';
-
-    return $output;
-}
-add_shortcode('wine_rating', 'ai_wine_rater_shortcode');
-// Day 5: Custom Post Type - Wines
+// Day 5: CPT - Wines (আলাদা মেনু না দেখানো)
 function ai_wine_rater_register_cpt() {
     $labels = array(
         'name'               => 'Wines',
         'singular_name'      => 'Wine',
         'menu_name'          => 'Wines',
-        'name_admin_bar'     => 'Wine',
-        'add_new'            => 'Add New Wine',
+        'add_new'            => 'Add New Review',
         'add_new_item'       => 'Add New Wine Review',
-        'new_item'           => 'New Wine',
-        'edit_item'          => 'Edit Wine',
-        'view_item'          => 'View Wine',
-        'all_items'          => 'All Wines',
-        'search_items'       => 'Search Wines',
-        'not_found'          => 'No wines found.',
+        'all_items'          => 'All Reviews',
     );
 
     $args = array(
@@ -211,15 +203,15 @@ function ai_wine_rater_register_cpt() {
         'public'             => true,
         'has_archive'        => true,
         'rewrite'            => array('slug' => 'wines'),
-        'supports'           => array('title', 'editor', 'thumbnail', 'excerpt', 'comments'),
-        'show_in_menu'       => 'ai-wine-rater-settings', // আমাদের মেনুর নিচে সাবমেনু হিসেবে
-        'menu_icon'          => 'dashicons-food',
+        'supports'           => array('title', 'editor', 'thumbnail', 'excerpt'),
+        'show_in_menu'       => false, // আলাদা মেনু না দেখানো
     );
 
     register_post_type('wine', $args);
 }
 add_action('init', 'ai_wine_rater_register_cpt');
-// Day 5: Meta Box - Wine Rating Score
+
+// Day 5: Meta Box + Save
 function ai_wine_rater_add_meta_box() {
     add_meta_box(
         'wine_rating_meta',
@@ -232,10 +224,8 @@ function ai_wine_rater_add_meta_box() {
 }
 add_action('add_meta_boxes', 'ai_wine_rater_add_meta_box');
 
-// Meta Box কন্টেন্ট
 function ai_wine_rater_meta_box_callback($post) {
-    $rating = get_post_meta($post->ID, '_wine_rating_score', true);
-    $rating = $rating ? $rating : '5';
+    $rating = get_post_meta($post->ID, '_wine_rating_score', true) ?: '5';
     ?>
     <p>
         <label for="wine_rating_score"><strong>Rating (0-5):</strong></label><br>
@@ -244,18 +234,46 @@ function ai_wine_rater_meta_box_callback($post) {
     <?php
 }
 
-// সেভ করা
 function ai_wine_rater_save_meta($post_id) {
     if (array_key_exists('wine_rating_score', $_POST)) {
-        update_post_meta(
-            $post_id,
-            '_wine_rating_score',
-            sanitize_text_field($_POST['wine_rating_score'])
-        );
+        update_post_meta($post_id, '_wine_rating_score', sanitize_text_field($_POST['wine_rating_score']));
     }
 }
 add_action('save_post', 'ai_wine_rater_save_meta');
-// Day 6: সিঙ্গল ওয়াইন পেজে অটো রেটিং বক্স দেখানো
+
+// Day 6: শর্টকোড – মেটা + ডিফল্ট + কালার + ফন্ট
+function ai_wine_rater_shortcode($atts) {
+    global $post;
+
+    $default_score = get_option('ai_wine_rater_default_score', '5');
+    $box_color = get_option('ai_wine_rater_box_color', '#722f37');
+    $text_font = get_option('ai_wine_rater_text_font', 'Arial');
+
+    $meta_score = (get_post_type() == 'wine' && $post) ? get_post_meta($post->ID, '_wine_rating_score', true) : '';
+
+    $atts = shortcode_atts(array(
+        'score' => $meta_score ?: $default_score,
+        'text'  => 'Excellent Wine!',
+    ), $atts, 'wine_rating');
+
+    $score = floatval($atts['score']);
+    $text = esc_html($atts['text']);
+
+    $stars = '';
+    for ($i = 1; $i <= 5; $i++) {
+        $stars .= ($i <= $score) ? '★' : '☆';
+    }
+
+    $output = '<div style="background:' . esc_attr($box_color) . '; color:white; padding:20px; border-radius:10px; text-align:center; margin:30px 0; font-family:' . esc_attr($text_font) . ';">';
+    $output .= '<p style="margin:0; font-size:24px;"><strong>Wine Rating:</strong> ' . $stars . ' ' . $score . '/5</p>';
+    $output .= '<p style="margin:15px 0 0; font-size:18px;">' . $text . '</p>';
+    $output .= '</div>';
+
+    return $output;
+}
+add_shortcode('wine_rating', 'ai_wine_rater_shortcode');
+
+// Day 6: সিঙ্গল পেজে অটো রেটিং
 function ai_wine_rater_auto_rating_single($content) {
     if (is_singular('wine') && in_the_loop() && is_main_query()) {
         $content .= do_shortcode('[wine_rating text="Reviewed by AI Wine Rater"]');
@@ -263,12 +281,12 @@ function ai_wine_rater_auto_rating_single($content) {
     return $content;
 }
 add_filter('the_content', 'ai_wine_rater_auto_rating_single');
-// Day 6: Archive page-এ প্রতিটা ওয়াইনের রেটিং দেখানো
+
+// Day 6: Archive-এ রেটিং
 function ai_wine_rater_archive_display_rating() {
     global $post;
     if (get_post_type($post) === 'wine') {
-        $rating = get_post_meta($post->ID, '_wine_rating_score', true);
-        $rating = $rating ? $rating : 'Not rated yet';
+        $rating = get_post_meta($post->ID, '_wine_rating_score', true) ?: 'Not rated';
         echo '<p style="font-weight:bold; color:#722f37;">Rating: ' . esc_html($rating) . '/5</p>';
     }
 }
