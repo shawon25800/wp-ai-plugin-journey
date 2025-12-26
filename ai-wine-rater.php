@@ -155,14 +155,22 @@ function ai_wine_rater_enqueue_admin_scripts($hook) {
 }
 add_action('admin_enqueue_scripts', 'ai_wine_rater_enqueue_admin_scripts');
 
-// Day 2 + 3 + 4: শর্টকোড (ডিফল্ট স্কোর + কালার)
+// Day 6: শর্টকোড – মেটা থেকে রেটিং নেয়া + ডিফল্ট সাপোর্ট
 function ai_wine_rater_shortcode($atts) {
+    global $post;
+
     $default_score = get_option('ai_wine_rater_default_score', '5');
     $box_color = get_option('ai_wine_rater_box_color', '#722f37');
 
+    // CPT 'wine' হলে মেটা থেকে রেটিং নেয়া
+    $meta_score = '';
+    if (get_post_type() == 'wine' && $post) {
+        $meta_score = get_post_meta($post->ID, '_wine_rating_score', true);
+    }
+
     $atts = shortcode_atts(array(
-        'score' => $default_score,
-        'text' => 'Excellent Wine!',
+        'score' => $meta_score ?: $default_score, // মেটা > ডিফল্ট
+        'text'  => 'Excellent Wine!',
     ), $atts, 'wine_rating');
 
     $score = floatval($atts['score']);
@@ -170,11 +178,7 @@ function ai_wine_rater_shortcode($atts) {
 
     $stars = '';
     for ($i = 1; $i <= 5; $i++) {
-        if ($i <= $score) {
-            $stars .= '★';
-        } else {
-            $stars .= '☆';
-        }
+        $stars .= ($i <= $score) ? '★' : '☆';
     }
 
     $output = '<div style="background:' . esc_attr($box_color) . '; color:white; padding:20px; border-radius:10px; text-align:center; margin:30px 0;">';
@@ -251,3 +255,21 @@ function ai_wine_rater_save_meta($post_id) {
     }
 }
 add_action('save_post', 'ai_wine_rater_save_meta');
+// Day 6: সিঙ্গল ওয়াইন পেজে অটো রেটিং বক্স দেখানো
+function ai_wine_rater_auto_rating_single($content) {
+    if (is_singular('wine') && in_the_loop() && is_main_query()) {
+        $content .= do_shortcode('[wine_rating text="Reviewed by AI Wine Rater"]');
+    }
+    return $content;
+}
+add_filter('the_content', 'ai_wine_rater_auto_rating_single');
+// Day 6: Archive page-এ প্রতিটা ওয়াইনের রেটিং দেখানো
+function ai_wine_rater_archive_display_rating() {
+    global $post;
+    if (get_post_type($post) === 'wine') {
+        $rating = get_post_meta($post->ID, '_wine_rating_score', true);
+        $rating = $rating ? $rating : 'Not rated yet';
+        echo '<p style="font-weight:bold; color:#722f37;">Rating: ' . esc_html($rating) . '/5</p>';
+    }
+}
+add_action('the_excerpt', 'ai_wine_rater_archive_display_rating');
