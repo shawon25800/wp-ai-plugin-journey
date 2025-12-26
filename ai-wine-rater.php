@@ -66,28 +66,55 @@ function ai_wine_rater_prefix_title($title) {
 }
 add_filter('the_title', 'ai_wine_rater_prefix_title');
 
+// Day 3 & 4: প্রধান মেনু – হোম পেজ (Welcome message)
+function ai_wine_rater_home_page() {
+    ?>
+    <div class="wrap">
+        <h1>🍷 Welcome to AI Wine Rater Plugin</h1>
+        <p style="font-size:18px;">তুমি এখন একটা পাওয়ারফুল ওয়াইন রিভিউ প্লাগিন বানাচ্ছো Grok-এর সাথে!</p>
+        <p style="font-size:16px;">সাবমেনু থেকে “Wine Settings” এ যাও কালার, ফন্ট, ডিফল্ট রেটিং চেঞ্জ করতে।</p>
+        <p style="font-size:16px;">“All Reviews” থেকে ওয়াইন রিভিউ ম্যানেজ করো।</p>
+        <hr>
+        <p>তুমি দারুণ করছো ভাই! চলো পরের লেভেলে যাই 🚀</p>
+    </div>
+    <?php
+}
+
 // Day 3 & 4: প্রধান মেনু + সাবমেনু
 function ai_wine_rater_admin_menu() {
+    // প্রধান মেনু – হোম পেজ (Welcome message)
     add_menu_page(
-        'AI Wine Rater Settings',
+        'AI Wine Rater',
         'Wine Rater',
         'manage_options',
-        'ai-wine-rater-settings',
-        'ai_wine_rater_settings_page',
+        'ai-wine-rater-home',
+        'ai_wine_rater_home_page',
         'dashicons-star-filled',
         80
     );
 
+    // সাবমেনু – Wine Settings (কালার পিকার + ডিফল্ট স্কোর + ফন্ট)
     add_submenu_page(
+        'ai-wine-rater-home',
+        'Wine Settings',
+        'Wine Settings',
+        'manage_options',
         'ai-wine-rater-settings',
+        'ai_wine_rater_settings_page'
+    );
+
+    // সাবমেনু – All Reviews
+    add_submenu_page(
+        'ai-wine-rater-home',
         'All Reviews',
         'All Reviews',
         'manage_options',
         'edit.php?post_type=wine'
     );
 
+    // সাবমেনু – Add New Review
     add_submenu_page(
-        'ai-wine-rater-settings',
+        'ai-wine-rater-home',
         'Add New Review',
         'Add New Review',
         'manage_options',
@@ -96,9 +123,9 @@ function ai_wine_rater_admin_menu() {
 }
 add_action('admin_menu', 'ai_wine_rater_admin_menu');
 
-// ডুপ্লিকেট সাবমেনু হাইড করা
+// ডুপ্লিকেট প্রধান মেনু হাইড
 function ai_wine_rater_remove_duplicate_submenu() {
-    remove_submenu_page('ai-wine-rater-settings', 'ai-wine-rater-settings');
+    remove_submenu_page('ai-wine-rater-home', 'ai-wine-rater-home');
 }
 add_action('admin_menu', 'ai_wine_rater_remove_duplicate_submenu', 999);
 
@@ -176,9 +203,9 @@ function ai_wine_rater_text_font_field() {
     echo '<p class="description">যেমন: Arial, Georgia, "Times New Roman"</p>';
 }
 
-// Day 4: কালার পিকার লোড
+// Day 4: কালার পিকার লোড (সেটিংস পেজের জন্য)
 function ai_wine_rater_enqueue_admin_scripts($hook) {
-    if ('toplevel_page_ai-wine-rater-settings' !== $hook) {
+    if ('wine-rater_page_ai-wine-rater-settings' !== $hook) {
         return;
     }
     wp_enqueue_style('wp-color-picker');
@@ -187,12 +214,11 @@ function ai_wine_rater_enqueue_admin_scripts($hook) {
 }
 add_action('admin_enqueue_scripts', 'ai_wine_rater_enqueue_admin_scripts');
 
-// Day 5: CPT - Wines (আলাদা মেনু না দেখানো)
+// Day 5: CPT - Wines
 function ai_wine_rater_register_cpt() {
     $labels = array(
         'name'               => 'Wines',
         'singular_name'      => 'Wine',
-        'menu_name'          => 'Wines',
         'add_new'            => 'Add New Review',
         'add_new_item'       => 'Add New Wine Review',
         'all_items'          => 'All Reviews',
@@ -204,7 +230,7 @@ function ai_wine_rater_register_cpt() {
         'has_archive'        => true,
         'rewrite'            => array('slug' => 'wines'),
         'supports'           => array('title', 'editor', 'thumbnail', 'excerpt'),
-        'show_in_menu'       => false, // আলাদা মেনু না দেখানো
+        'show_in_menu'       => false,
     );
 
     register_post_type('wine', $args);
