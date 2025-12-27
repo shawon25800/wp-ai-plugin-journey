@@ -2,7 +2,7 @@
 /**
  * Plugin Name: AI Wine Rater
  * Plugin URI: https://github.com/shawon25800/wp-ai-plugin-journey
- * Description: আমার AI-পাওয়ার্ড ওয়ার্ডপ্রেস প্লাগিন – Grok-এর সাথে ডেভেলপমেন্ট শেখা চলছে 🍷
+ * Description: A powerful WordPress plugin for wine reviews with star ratings, comments, average calculation, and full admin control. Built with Grok AI 🍷
  * Version: 1.0
  * Author: Shawon
  * Author URI: https://github.com/shawon25800
@@ -10,12 +10,12 @@
  * Text Domain: ai-wine-rater
  */
 
-// সিকিউরিটি
+// Security
 if (!defined('ABSPATH')) {
     exit;
 }
 
-// Day 1: ফুটার মেসেজ
+// Day 1: Footer message
 function ai_wine_rater_footer_message() {
     ?>
     <div style="text-align:center; background:#5f9ea0; color:white; padding:20px; margin-top:40px; font-size:18px;">
@@ -26,29 +26,29 @@ function ai_wine_rater_footer_message() {
 }
 add_action('wp_footer', 'ai_wine_rater_footer_message');
 
-// Day 2: অ্যাডমিন নোটিস
+// Day 2: Admin notice
 function ai_wine_rater_day2_admin_notice() {
     ?>
     <div class="notice notice-success is-dismissible">
-        <p>🍷 <strong></p>
+        <p>🍷 </p>
     </div>
     <?php
 }
 add_action('admin_notices', 'ai_wine_rater_day2_admin_notice');
 
-// Day 2: Head মেটা
+// Day 2: Head meta
 function ai_wine_rater_custom_meta() {
     echo '<meta name="author" content="Shawon - Learning with Grok AI 🍷">';
-    echo '<meta name="description" content="AI Wine Rater Plugin - Day 2 Hooks Practice">';
+    echo '<meta name="description" content="AI Wine Rater Plugin - Learning WordPress Development">';
 }
 add_action('wp_head', 'ai_wine_rater_custom_meta');
 
-// Day 2: কন্টেন্ট ফিল্টার
+// Day 2: Content filter
 function ai_wine_rater_add_footer_to_content($content) {
     if (is_single()) {
         $extra_content = '<div style="margin-top: 30px; padding: 20px; background: #f8f8f8; border-left: 5px solid #722f37;">';
         $extra_content .= '<p><strong>Day 2 Filter Hook Test:</strong></p>';
-        $extra_content .= '<p>এই কন্টেন্টটা WordPress filter hook দিয়ে অটো অ্যাড করা হয়েছে। 🍷</p>';
+        $extra_content .= '<p>This content was automatically added using WordPress filter hook. 🍷</p>';
         $extra_content .= '<p>– AI Wine Rater Plugin (Learning Hooks with Grok)</p>';
         $extra_content .= '</div>';
         $content .= $extra_content;
@@ -57,7 +57,7 @@ function ai_wine_rater_add_footer_to_content($content) {
 }
 add_filter('the_content', 'ai_wine_rater_add_footer_to_content');
 
-// Day 2: টাইটেল প্রিফিক্স
+// Day 2: Title prefix
 function ai_wine_rater_prefix_title($title) {
     if (is_single()) {
         $title = '[Day 2] ' . $title;
@@ -66,23 +66,22 @@ function ai_wine_rater_prefix_title($title) {
 }
 add_filter('the_title', 'ai_wine_rater_prefix_title');
 
-// Day 3 & 4: প্রধান মেনু – হোম পেজ (Welcome message)
+// Day 3 & 4: Main menu – Home page (Welcome message)
 function ai_wine_rater_home_page() {
     ?>
     <div class="wrap">
         <h1>🍷 Welcome to AI Wine Rater Plugin</h1>
-        <p style="font-size:18px;">তুমি এখন একটা পাওয়ারফুল ওয়াইন রিভিউ প্লাগিন বানাচ্ছো Grok-এর সাথে!</p>
-        <p style="font-size:16px;">সাবমেনু থেকে “Wine Settings” এ যাও কালার, ফন্ট, ডিফল্ট রেটিং চেঞ্জ করতে।</p>
-        <p style="font-size:16px;">“All Reviews” থেকে ওয়াইন রিভিউ ম্যানেজ করো।</p>
+        <p style="font-size:18px;">You are building a powerful wine review plugin with Grok AI!</p>
+        <p style="font-size:16px;">Go to “Wine Settings” from submenu to change color, font, default rating.</p>
+        <p style="font-size:16px;">Manage wine reviews from “All Reviews”.</p>
         <hr>
-        <p>তুমি দারুণ করছো ভাই! চলো পরের লেভেলে যাই 🚀</p>
+        <p>You are doing great! Let's go to the next level 🚀</p>
     </div>
     <?php
 }
 
-// Day 3 & 4: প্রধান মেনু + সাবমেনু
+// Day 3 & 4: Main menu + submenu
 function ai_wine_rater_admin_menu() {
-    // প্রধান মেনু – হোম পেজ (Welcome message)
     add_menu_page(
         'AI Wine Rater',
         'Wine Rater',
@@ -93,7 +92,6 @@ function ai_wine_rater_admin_menu() {
         80
     );
 
-    // সাবমেনু – Wine Settings (কালার পিকার + ডিফল্ট স্কোর + ফন্ট)
     add_submenu_page(
         'ai-wine-rater-home',
         'Wine Settings',
@@ -103,7 +101,6 @@ function ai_wine_rater_admin_menu() {
         'ai_wine_rater_settings_page'
     );
 
-    // সাবমেনু – All Reviews
     add_submenu_page(
         'ai-wine-rater-home',
         'All Reviews',
@@ -112,7 +109,6 @@ function ai_wine_rater_admin_menu() {
         'edit.php?post_type=wine'
     );
 
-    // সাবমেনু – Add New Review
     add_submenu_page(
         'ai-wine-rater-home',
         'Add New Review',
@@ -123,18 +119,18 @@ function ai_wine_rater_admin_menu() {
 }
 add_action('admin_menu', 'ai_wine_rater_admin_menu');
 
-// ডুপ্লিকেট প্রধান মেনু হাইড
+// Hide duplicate main menu
 function ai_wine_rater_remove_duplicate_submenu() {
     remove_submenu_page('ai-wine-rater-home', 'ai-wine-rater-home');
 }
 add_action('admin_menu', 'ai_wine_rater_remove_duplicate_submenu', 999);
 
-// Day 3 & 4: সেটিংস পেজ – glassmorphism style সহ
+// Day 3 & 4: Settings page – glassmorphism style
 function ai_wine_rater_settings_page() {
     ?>
     <div class="wrap" style="background: url('https://images.unsplash.com/photo-1516594794599-4a5e4b9e9a5d?ixlib=rb-4.0.3&auto=format&fit=crop&q=80') no-repeat center center fixed; background-size: cover; min-height: 100vh;">
         <div style="max-width: 800px; margin: 40px auto; padding: 40px; background: rgba(255, 255, 255, 0.15); border-radius: 16px; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.18);">
-            <h1 style="text-align:center; color:white; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">🍷 AI Wine Rater Settings</h1>
+            <h1 style="text-align:center; color:black; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">🍷 AI Wine Rater Settings</h1>
             <form method="post" action="options.php" style="background: rgba(255, 255, 255, 0.1); padding: 30px; border-radius: 12px;">
                 <?php
                 settings_fields('ai_wine_rater_settings_group');
@@ -147,7 +143,7 @@ function ai_wine_rater_settings_page() {
     <?php
 }
 
-// Day 3 & 4: সেটিংস রেজিস্টার
+// Day 3 & 4: Settings register
 function ai_wine_rater_register_settings() {
     register_setting('ai_wine_rater_settings_group', 'ai_wine_rater_default_score');
     register_setting('ai_wine_rater_settings_group', 'ai_wine_rater_box_color');
@@ -186,17 +182,17 @@ function ai_wine_rater_register_settings() {
 }
 add_action('admin_init', 'ai_wine_rater_register_settings');
 
-// ফিল্ড ফাংশন
+// Field functions
 function ai_wine_rater_default_score_field() {
     $score = get_option('ai_wine_rater_default_score', '5');
     echo '<input type="number" step="0.1" min="0" max="5" name="ai_wine_rater_default_score" value="' . esc_attr($score) . '" />';
-    echo '<p class="description">শর্টকোডে score না দিলে এই ভ্যালু ব্যবহার হবে (0-5)</p>';
+    echo '<p class="description">Default value used when no score is provided in shortcode (0-5)</p>';
 }
 
 function ai_wine_rater_box_color_field() {
     $color = get_option('ai_wine_rater_box_color', '#722f37');
     echo '<input type="text" name="ai_wine_rater_box_color" value="' . esc_attr($color) . '" class="my-color-field" />';
-    echo '<p class="description">রেটিং বক্সের ব্যাকগ্রাউন্ড কালার (hex code, যেমন #722f37)</p>';
+    echo '<p class="description">Background color of rating box (hex code, e.g. #722f37)</p>';
 }
 
 function ai_wine_rater_text_font_field() {
@@ -213,16 +209,15 @@ function ai_wine_rater_text_font_field() {
         'Lucida Sans' => '"Lucida Sans Unicode", "Lucida Grande", sans-serif',
         'Impact' => 'Impact, Charcoal, sans-serif',
     );
-
     echo '<select name="ai_wine_rater_text_font">';
     foreach ($fonts as $value => $label) {
         echo '<option value="' . esc_attr($value) . '" ' . selected($font, $value, false) . '>' . esc_html($label) . '</option>';
     }
     echo '</select>';
-    echo '<p class="description">রেটিং টেক্সটের ফন্ট ফ্যামিলি চুজ করো</p>';
+    echo '<p class="description">Choose font family for rating text</p>';
 }
 
-// Day 4: কালার পিকার লোড (সেটিংস পেজের জন্য)
+// Day 4: Color picker load
 function ai_wine_rater_enqueue_admin_scripts($hook) {
     if ('wine-rater_page_ai-wine-rater-settings' !== $hook) {
         return;
@@ -286,19 +281,15 @@ function ai_wine_rater_save_meta($post_id) {
 }
 add_action('save_post', 'ai_wine_rater_save_meta');
 
-// Day 8: শর্টকোড – average rating + হাফ স্টার
+// Day 8: Shortcode – average rating + half star
 function ai_wine_rater_shortcode($atts) {
     global $post;
-
     $default_score = get_option('ai_wine_rater_default_score', '5');
     $box_color = get_option('ai_wine_rater_box_color', '#722f37');
     $text_font = get_option('ai_wine_rater_text_font', 'Arial');
-
-    // ইউজার রেটিংগুলো (array)
-    $user_ratings = (get_post_type() == 'wine' && $post) ? get_post_meta($post->ID, '_wine_user_ratings', true) : array();
-    $user_ratings = is_array($user_ratings) ? $user_ratings : array();
-
-    $average_score = count($user_ratings) > 0 ? round(array_sum($user_ratings) / count($user_ratings), 1) : $default_score;
+    $user_reviews = (get_post_type() == 'wine' && $post) ? get_post_meta($post->ID, '_wine_user_reviews', true) : array();
+    $user_reviews = is_array($user_reviews) ? $user_reviews : array();
+    $average_score = count($user_reviews) > 0 ? round(array_sum(array_column($user_reviews, 'rating')) / count($user_reviews), 1) : $default_score;
 
     $atts = shortcode_atts(array(
         'score' => $average_score,
@@ -308,21 +299,20 @@ function ai_wine_rater_shortcode($atts) {
     $score = floatval($atts['score']);
     $text = esc_html($atts['text']);
 
-    // স্টার জেনারেট (হাফ স্টার সহ)
     $stars = '';
     for ($i = 1; $i <= 5; $i++) {
         if ($score >= $i) {
-            $stars .= '★'; // ফুল স্টার
+            $stars .= '★';
         } elseif ($score >= $i - 0.5) {
-            $stars .= '½'; // হাফ স্টার
+            $stars .= '½';
         } else {
-            $stars .= '☆'; // খালি
+            $stars .= '☆';
         }
     }
 
     $output = '<div style="background:' . esc_attr($box_color) . '; color:white; padding:20px; border-radius:10px; text-align:center; margin:30px 0; font-family:' . esc_attr($text_font) . ';">';
     $output .= '<p style="margin:0; font-size:24px;"><strong>User Average Rating:</strong> ' . $stars . ' ' . $score . '/5</p>';
-    $output .= '<p style="margin:15px 0 0; font-size:18px;">(' . count($user_ratings) . ' reviews)</p>';
+    $output .= '<p style="margin:15px 0 0; font-size:18px;">(' . count($user_reviews) . ' reviews)</p>';
     $output .= '<p style="margin:10px 0 0;">' . $text . '</p>';
     $output .= '</div>';
 
@@ -330,7 +320,7 @@ function ai_wine_rater_shortcode($atts) {
 }
 add_shortcode('wine_rating', 'ai_wine_rater_shortcode');
 
-// Day 6: সিঙ্গল পেজে অটো রেটিং
+// Day 6: Auto rating on single page
 function ai_wine_rater_auto_rating_single($content) {
     if (is_singular('wine') && in_the_loop() && is_main_query()) {
         $content .= do_shortcode('[wine_rating text="Reviewed by AI Wine Rater"]');
@@ -339,7 +329,7 @@ function ai_wine_rater_auto_rating_single($content) {
 }
 add_filter('the_content', 'ai_wine_rater_auto_rating_single');
 
-// Day 6: Archive-এ রেটিং
+// Day 6: Archive rating
 function ai_wine_rater_archive_display_rating() {
     global $post;
     if (get_post_type($post) === 'wine') {
@@ -348,7 +338,8 @@ function ai_wine_rater_archive_display_rating() {
     }
 }
 add_action('the_excerpt', 'ai_wine_rater_archive_display_rating');
-// Day 7: Frontend রেটিং ফর্ম (স্টার দিয়ে)
+
+// Day 9: Rating form with comment + nonce
 function ai_wine_rater_frontend_rating_form($content) {
     if (is_singular('wine') && in_the_loop() && is_main_query()) {
         global $post;
@@ -358,11 +349,13 @@ function ai_wine_rater_frontend_rating_form($content) {
         $form .= '<h3>Rate this Wine</h3>';
         $form .= '<form id="wine-rating-form">';
         $form .= '<input type="hidden" name="post_id" value="' . $post_id . '" />';
+        $form .= '<input type="hidden" name="nonce" value="' . wp_create_nonce('ai_wine_rater_nonce') . '" />';
         $form .= '<div class="rating-stars" style="font-size:40px; margin:15px 0;">';
         for ($i = 5; $i >= 1; $i--) {
             $form .= '<span class="star" data-value="' . $i . '" style="cursor:pointer; color:#ccc;">★</span>';
         }
         $form .= '</div>';
+        $form .= '<textarea name="comment" placeholder="Your comment (optional)" style="width:100%; height:80px; margin:10px 0; padding:10px;"></textarea>';
         $form .= '<button type="submit" style="padding:10px 20px; background:#722f37; color:white; border:none; border-radius:5px; cursor:pointer;">Submit Rating</button>';
         $form .= '<p id="rating-response" style="margin-top:15px; font-weight:bold;"></p>';
         $form .= '</form>';
@@ -373,7 +366,8 @@ function ai_wine_rater_frontend_rating_form($content) {
     return $content;
 }
 add_filter('the_content', 'ai_wine_rater_frontend_rating_form');
-// Day 7: Frontend JS for star rating + AJAX
+
+// Day 9: Frontend JS
 function ai_wine_rater_enqueue_frontend_scripts() {
     if (is_singular('wine')) {
         wp_enqueue_script('jquery');
@@ -389,6 +383,7 @@ function ai_wine_rater_enqueue_frontend_scripts() {
 
                 $("#wine-rating-form").on("submit", function(e) {
                     e.preventDefault();
+
                     if (selectedRating == 0) {
                         $("#rating-response").html("Please select a rating!").css("color", "red");
                         return;
@@ -396,71 +391,196 @@ function ai_wine_rater_enqueue_frontend_scripts() {
 
                     var data = {
                         action: "ai_wine_rater_submit",
-                        post_id: $(this).find("[name=post_id]").val(),
+                        post_id: $(this).find("input[name=\'post_id\']").val(),
                         rating: selectedRating,
-                        nonce: "' . wp_create_nonce('ai_wine_rater_nonce') . '"
+                        comment: $(this).find("textarea[name=\'comment\']").val(),
+                        nonce: $(this).find("input[name=\'nonce\']").val()
                     };
 
                     $.post("' . admin_url('admin-ajax.php') . '", data, function(response) {
                         if (response.success) {
                             $("#rating-response").html(response.data.message).css("color", "green");
                         } else {
-                            $("#rating-response").html(response.data.message).css("color", "red");
+                            $("#rating-response").html("Error: " + (response.data.message || "Something went wrong")).css("color", "red");
                         }
-                    }, "json");
+                    }, "json").fail(function() {
+                        $("#rating-response").html("Server error. Try again.").css("color", "red");
+                    });
                 });
             });
         ');
     }
 }
 add_action('wp_enqueue_scripts', 'ai_wine_rater_enqueue_frontend_scripts');
-// Day 8: AJAX handler – multiple ratings সেভ + average
+
+// Day 9: AJAX handler
 function ai_wine_rater_submit_rating() {
     check_ajax_referer('ai_wine_rater_nonce', 'nonce');
 
     $post_id = intval($_POST['post_id']);
     $rating = floatval($_POST['rating']);
+    $comment = sanitize_text_field($_POST['comment'] ?? '');
 
     if ($rating < 1 || $rating > 5 || get_post_type($post_id) !== 'wine') {
         wp_send_json_error(array('message' => 'Invalid rating or post.'));
     }
 
-    // আগের রেটিংগুলো নেয়া
-    $ratings = get_post_meta($post_id, '_wine_user_ratings', true);
-    $ratings = is_array($ratings) ? $ratings : array();
+    $reviews = get_post_meta($post_id, '_wine_user_reviews', true);
+    $reviews = is_array($reviews) ? $reviews : array();
 
-    // নতুন রেটিং যোগ করা
-    $ratings[] = $rating;
+    $reviews[] = array(
+        'rating'  => $rating,
+        'comment' => $comment,
+        'time'    => time()
+    );
 
-    // আপডেট করা
-    update_post_meta($post_id, '_wine_user_ratings', $ratings);
+    update_post_meta($post_id, '_wine_user_reviews', $reviews);
 
-    // Average ক্যালকুলেট
-    $average = count($ratings) > 0 ? round(array_sum($ratings) / count($ratings), 1) : 0;
+    $average = count($reviews) > 0 ? round(array_sum(array_column($reviews, 'rating')) / count($reviews), 1) : 0;
 
     wp_send_json_success(array('message' => 'Thank you! Your rating ' . $rating . '/5 submitted. Average: ' . $average . '/5'));
 }
 add_action('wp_ajax_ai_wine_rater_submit', 'ai_wine_rater_submit_rating');
 add_action('wp_ajax_nopriv_ai_wine_rater_submit', 'ai_wine_rater_submit_rating');
-// Day 8: Admin columns-এ average user rating দেখানো
+
+// Day 9: Display all reviews
+function ai_wine_rater_display_reviews($content) {
+    if (is_singular('wine') && in_the_loop() && is_main_query()) {
+        global $post;
+        $post_id = $post->ID;
+
+        $reviews = get_post_meta($post_id, '_wine_user_reviews', true);
+        $reviews = is_array($reviews) ? $reviews : array();
+
+        if (!empty($reviews)) {
+            $list = '<div style="margin:40px 0;">';
+            $list .= '<h3>All Reviews (' . count($reviews) . ')</h3>';
+            $list .= '<ul style="list-style:none; padding:0;">';
+            foreach ($reviews as $review) {
+                $stars = '';
+                for ($i = 1; $i <= 5; $i++) {
+                    $stars .= ($i <= $review['rating']) ? '★' : '☆';
+                }
+                $list .= '<li style="background:#f9f9f9; margin:10px 0; padding:15px; border-radius:8px;">';
+                $list .= '<p><strong>Rating:</strong> ' . $stars . ' (' . $review['rating'] . '/5)</p>';
+                if (!empty($review['comment'])) {
+                    $list .= '<p><strong>Comment:</strong> ' . esc_html($review['comment']) . '</p>';
+                }
+                $list .= '<small>Reviewed on: ' . date('F j, Y', $review['time']) . '</small>';
+                $list .= '</li>';
+            }
+            $list .= '</ul>';
+            $list .= '</div>';
+
+            $content .= $list;
+        }
+    }
+    return $content;
+}
+add_filter('the_content', 'ai_wine_rater_display_reviews');
+
+// Day 8: Admin column average
 function ai_wine_rater_add_admin_column($columns) {
     $columns['user_rating'] = 'Average User Rating';
     return $columns;
 }
 add_filter('manage_wine_posts_columns', 'ai_wine_rater_add_admin_column');
 
-// কলামে average ভ্যালু দেখানো
 function ai_wine_rater_admin_column_value($column, $post_id) {
     if ($column == 'user_rating') {
-        $ratings = get_post_meta($post_id, '_wine_user_ratings', true);
-        $ratings = is_array($ratings) ? $ratings : array();
+        $reviews = get_post_meta($post_id, '_wine_user_reviews', true);
+        $reviews = is_array($reviews) ? $reviews : array();
 
-        if (count($ratings) > 0) {
-            $average = round(array_sum($ratings) / count($ratings), 1);
-            echo esc_html($average) . '/5 (' . count($ratings) . ' reviews)';
+        if (count($reviews) > 0) {
+            $average = round(array_sum(array_column($reviews, 'rating')) / count($reviews), 1);
+            echo esc_html($average) . '/5 (' . count($reviews) . ' reviews)';
         } else {
             echo 'No rating yet';
         }
     }
 }
 add_action('manage_wine_posts_custom_column', 'ai_wine_rater_admin_column_value', 10, 2);
+
+// Day 9: Manage Reviews page with glassmorphism
+function ai_wine_rater_manage_reviews_page() {
+    ?>
+    <div class="wrap" style="background: url('https://images.unsplash.com/photo-1516594794599-4a5e4b9e9a5d?ixlib=rb-4.0.3&auto=format&fit=crop&q=80') no-repeat center center fixed; background-size: cover; min-height: 100vh;">
+        <div style="max-width: 1000px; margin: 40px auto; padding: 40px; background: rgba(255, 255, 255, 0.15); border-radius: 16px; box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); border: 1px solid rgba(255, 255, 255, 0.18);">
+            <h1 style="text-align:center; color:black; text-shadow: 0 2px 10px rgba(0,0,0,0.5);">🍷 Manage User Reviews</h1>
+
+            <?php
+            $all_wines = get_posts(array(
+                'post_type' => 'wine',
+                'numberposts' => -1,
+                'post_status' => 'publish'
+            ));
+
+            if (empty($all_wines)) {
+                echo '<p style="color:white;">No wines found.</p>';
+                return;
+            }
+
+            foreach ($all_wines as $wine) {
+                $reviews = get_post_meta($wine->ID, '_wine_user_reviews', true);
+                $reviews = is_array($reviews) ? $reviews : array();
+
+                if (!empty($reviews)) {
+                    echo '<h2 style="color:white;">' . esc_html($wine->post_title) . ' (ID: ' . $wine->ID . ')</h2>';
+                    echo '<table class="widefat fixed" style="background:rgba(255,255,255,0.2); color:white;">';
+                    echo '<thead><tr><th style="color:black;">Rating</th><th style="color:black;">Comment</th><th style="color:black;">Date</th><th style="color:black;">Action</th></tr></thead>';
+                    echo '<tbody>';
+
+                    foreach ($reviews as $index => $review) {
+                        $stars = str_repeat('★', $review['rating']) . str_repeat('☆', 5 - $review['rating']);
+                        echo '<tr style="background:rgba(255,255,255,0.1);">';
+                        echo '<td>' . $stars . ' (' . $review['rating'] . '/5)</td>';
+                        echo '<td>' . esc_html($review['comment'] ?: 'No comment') . '</td>';
+                        echo '<td>' . date('F j, Y', $review['time']) . '</td>';
+                        echo '<td>';
+                        echo '<form method="post" style="display:inline;">';
+                        echo '<input type="hidden" name="delete_review_post_id" value="' . $wine->ID . '" />';
+                        echo '<input type="hidden" name="delete_review_index" value="' . $index . '" />';
+                        wp_nonce_field('delete_review_nonce', 'delete_review_nonce');
+                        echo '<button type="submit" class="button button-secondary" onclick="return confirm(\'Are you sure you want to delete this review?\')">Delete</button>';
+                        echo '</form>';
+                        echo '</td>';
+                        echo '</tr>';
+                    }
+
+                    echo '</tbody></table><br>';
+                }
+            }
+
+            // Delete handler
+            if (isset($_POST['delete_review_post_id']) && wp_verify_nonce($_POST['delete_review_nonce'], 'delete_review_nonce')) {
+                $post_id = intval($_POST['delete_review_post_id']);
+                $index = intval($_POST['delete_review_index']);
+
+                $reviews = get_post_meta($post_id, '_wine_user_reviews', true);
+                $reviews = is_array($reviews) ? $reviews : array();
+
+                if (isset($reviews[$index])) {
+                    unset($reviews[$index]);
+                    $reviews = array_values($reviews);
+                    update_post_meta($post_id, '_wine_user_reviews', $reviews);
+                    echo '<div class="notice notice-success"><p>Review deleted successfully!</p></div>';
+                }
+            }
+            ?>
+        </div>
+    </div>
+    <?php
+}
+
+// Add Manage Reviews submenu
+function ai_wine_rater_add_manage_reviews_menu() {
+    add_submenu_page(
+        'ai-wine-rater-home',
+        'Manage Reviews',
+        'Manage Reviews',
+        'manage_options',
+        'ai-wine-rater-manage-reviews',
+        'ai_wine_rater_manage_reviews_page'
+    );
+}
+add_action('admin_menu', 'ai_wine_rater_add_manage_reviews_menu');
